@@ -11,7 +11,6 @@ count=0
 results=[[0 for x in range(0,6)]for y in range(0,50*pages)]	#store results here
 for i in range(1,pages+1):
 
-	#url="http://www.imdb.com/search/title?release_date=%d&sort=num_votes,desc&page=1" % (i+2006)
 	url="https://www.imdb.com/search/title?title_type=feature&release_date=1990-01-01,&user_rating=5.0,10.0&runtime=85,&sort=num_votes,desc&page=%d" % (i)
 	response=requests.get(url,headers=headers)
 	if response.status_code!=200:
@@ -21,7 +20,7 @@ for i in range(1,pages+1):
 	
 	print(i)
 	soup=BeautifulSoup(response.text,'html.parser')
-	#extracat useful html data using BeautifulSoup
+	#extract useful html data using BeautifulSoup
 	for tag in soup.find_all("div",class_ ='lister-item mode-advanced'):
 		
 		rating_div=tag.find("div",class_="ratings-bar")
@@ -40,10 +39,6 @@ for i in range(1,pages+1):
 		results[count][3]=re.sub("[^0-9]", "",real_runtime.string.strip())		#Runtime
 		genre=runtime.find("span",class_="genre")
 		gen=str(genre.string.strip())
-		#if gen.find("Music")>=0:
-		#	results[count][2]-=7
-		#elif gen.find("Animation")>=0:
-		#	results[count][2]-=5
 		results[count][4]=str(genre.string.strip())		#Genres
 		results[count][5]=int(num_votes.contents[3].string.replace(',','').strip())	#Votes
 		
@@ -59,5 +54,4 @@ with open("movies.csv",'w',newline='') as csvfile:
 	wr.writerows(results)
 
 
-#print(results)
 
